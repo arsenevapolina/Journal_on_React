@@ -25,18 +25,21 @@ function JournalForm({ onSubmit }) {
   useEffect(() => {
     if (isFormReadyToSubmit) {
       onSubmit(values);
+      dispatchForm({ type: "CLEAR" });
     }
   }, [isFormReadyToSubmit]);
 
-  const addJournalItem = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
-    dispatchForm({ type: "SUBMIT", payload: formProps });
+  // Универсальный метод, который работает для всех полей:
+  const onChange = (e) => {
+    dispatchForm({
+      type: "SET_VALUE",
+      payload: { [e.target.name]: e.target.value },
+    });
   };
 
-  const inputChange = (e) => {
-    setInputData(e.target.value);
+  const addJournalItem = (e) => {
+    e.preventDefault();
+    dispatchForm({ type: "SUBMIT" });
   };
 
   return (
@@ -44,6 +47,8 @@ function JournalForm({ onSubmit }) {
       <div>
         <input
           type="text"
+          onChange={onChange}
+          value={values.title}
           name="title"
           className={cn(styles["input-title"], {
             [styles["invalid"]]: !isValid.title,
@@ -57,7 +62,9 @@ function JournalForm({ onSubmit }) {
         </label>
         <input
           type="date"
+          onChange={onChange}
           name="date"
+          value={values.date}
           id="date"
           className={cn(styles["input"], {
             [styles["invalid"]]: !isValid.date,
@@ -69,11 +76,20 @@ function JournalForm({ onSubmit }) {
           <img src="./public/folder.svg" alt="Иконка папки" />
           <span>Метки</span>
         </label>
-        <input type="text" name="tag" id="tag" className={styles["input"]} />
+        <input
+          type="text"
+          onChange={onChange}
+          name="tag"
+          id="tag"
+          value={values.tag}
+          className={styles["input"]}
+        />
       </div>
       <textarea
         name="post"
-        id=""
+        id="post"
+        onChange={onChange}
+        value={values.post}
         cols="30"
         rows="10"
         className={cn(styles["input"], {
