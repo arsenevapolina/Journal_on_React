@@ -8,7 +8,6 @@ import JournalForm from "./components/JournalForm/JournalForm";
 import { useDeferredValue, useState } from "react";
 import React, { useEffect } from "react";
 
-
 function App() {
   const [items, setItems] = useState([]);
 
@@ -16,7 +15,7 @@ function App() {
     const data = JSON.parse(localStorage.getItem("data"));
     if (data) {
       setItems(
-        data.map(item => ({
+        data.map((item) => ({
           ...item,
           date: new Date(item.date),
         }))
@@ -26,8 +25,8 @@ function App() {
 
   useEffect(() => {
     if (items.length) {
-      console.log('Запись');
-      localStorage.setItem('data', JSON.stringify(items))
+      console.log("Запись");
+      localStorage.setItem("data", JSON.stringify(items));
     }
   }, [items]);
 
@@ -59,5 +58,3 @@ function App() {
 }
 
 export default App;
-
-

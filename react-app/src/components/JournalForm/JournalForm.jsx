@@ -1,19 +1,37 @@
 import styles from "./JournalForm.module.css";
 import Button from "../Button/Button";
-import { useEffect, useReducer } from "react";
 import cn from "classnames";
 import { INITIAL_STATE, formReducer } from "./JournalForm.state";
+import { useEffect, useReducer, useRef } from "react";
 
 function JournalForm({ onSubmit }) {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 
   const { isValid, isFormReadyToSubmit, values } = formState;
 
+  const titleRef = useRef();
+  const dateRef = useRef();
+  const postRef = useRef();
+
+  const focusError = (isValid) => {
+    switch (true) {
+      case !isValid.title:
+        titleRef.current.focus();
+        break;
+      case !isValid.date:
+        dateRef.current.focus();
+        break;
+      case !isValid.post:
+        postRef.current.focus();
+        break;
+    }
+  };
+
   useEffect(() => {
     let timerId;
     if (!isValid.date || !isValid.post || !isValid.title) {
+      focusError(isValid);
       timerId = setTimeout(() => {
-        console.log("Очистка состояния");
         dispatchForm({ type: "RESET_VALIDITY" });
       }, 2000);
     }
@@ -27,9 +45,8 @@ function JournalForm({ onSubmit }) {
       onSubmit(values);
       dispatchForm({ type: "CLEAR" });
     }
-  }, [isFormReadyToSubmit]);
+  }, [isFormReadyToSubmit, values, onSubmit]);
 
-  // Универсальный метод, который работает для всех полей:
   const onChange = (e) => {
     dispatchForm({
       type: "SET_VALUE",
@@ -47,6 +64,7 @@ function JournalForm({ onSubmit }) {
       <div>
         <input
           type="text"
+          ref={titleRef}
           onChange={onChange}
           value={values.title}
           name="title"
@@ -62,6 +80,7 @@ function JournalForm({ onSubmit }) {
         </label>
         <input
           type="date"
+          ref={dateRef}
           onChange={onChange}
           name="date"
           value={values.date}
@@ -86,6 +105,7 @@ function JournalForm({ onSubmit }) {
         />
       </div>
       <textarea
+        ref={postRef}
         name="post"
         id="post"
         onChange={onChange}
