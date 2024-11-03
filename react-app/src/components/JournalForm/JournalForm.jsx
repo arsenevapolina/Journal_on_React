@@ -122,7 +122,7 @@ function JournalForm({ onSubmit }) {
           [styles["invalid"]]: !isValid.post,
         })}
       ></textarea>
-      <Button type="submit" text="Сохранить" />
+      <Button>Сохранить</Button>
     </form>
   );
 }
