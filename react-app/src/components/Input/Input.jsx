@@ -1,19 +1,20 @@
+import { forwardRef } from "react";
 import styles from "./Input.module.css";
 import cn from "classnames";
-import React, { forwardRef } from "react";
 
 const Input = forwardRef(function Input(
-  { className, isValid = true, appearence, ...props },
+  { isValid, appearence = "text", className, ...props },
   ref
 ) {
   return (
     <input
-      {...props}
       ref={ref}
-      className={cn(className, styles["input"], {
-        [styles["invalid"]]: !isValid,
-        [styles["input-title"]]: appearence === "title",
+      className={cn(className, {
+        [styles["invalid"]]: isValid,
+        [styles["input-title"]]: appearence == "title",
+        [styles["input"]]: appearence == "text",
       })}
+      {...props}
     />
   );
 });
